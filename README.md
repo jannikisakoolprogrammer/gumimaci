@@ -1,2 +1,2 @@
 # gumimaci
-A simple tool to validate, build and release software.
+A simple tool to validate, build, execute, package and deploy software.
