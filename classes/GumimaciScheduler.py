@@ -47,4 +47,5 @@ class GumimaciScheduler(Gumimaci):
 					print(last_commit_sha)
 
 					# TODO:  Now create or udpate an existing repository record in the "queue" table.
+					
 					# TODO:  But first look if we need to actually build a new version of the repo (check the table 'repository' first for "name" and "sha".
