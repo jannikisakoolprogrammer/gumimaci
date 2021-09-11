@@ -17,13 +17,15 @@ class GumimaciScheduler(Gumimaci):
 	def insert_queue(
 		self,
 		_repo_name,
-		_commit):
+		_commit,
+		_message):
 		
 		cursor = self._db_conn.cursor()
 		cursor.execute(
 			config.TABLE_QUEUE_INSERT,
 			(_repo_name,
-			 _commit))
+			 _commit,
+			 _message))
 		
 		self._db_conn.commit()
 	
@@ -103,7 +105,8 @@ class GumimaciScheduler(Gumimaci):
 							# Add a new commit to be build.
 							self.insert_queue(
 								repository.get_name(),
-								repository.get_last_commit().sha)
+								repository.get_last_commit().sha,
+								repository.get_last_commit().commit.message)
 						
 					else:
 						# Otherwise we add all new commits since the last build, given that they are not in the queue yet.
@@ -129,10 +132,11 @@ class GumimaciScheduler(Gumimaci):
 							
 							for commit in recent_commits:
 								# Make sure the current commit does not yet exist in the queue.  Otherwise, don't add it.
-								if commit in list_rows_queue:
+								if commit[0] in list_rows_queue:
 									continue
 								else:
 									# Add a new commit to be build.
 									self.insert_queue(
 										repository.get_name(),
-										commit)
+										commit[0],
+										commit[1])
