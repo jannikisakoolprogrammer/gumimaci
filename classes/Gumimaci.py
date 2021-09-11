@@ -24,3 +24,21 @@ class Gumimaci(object):
             
 		self._db_conn = sqlite3.connect(
 			self._database)
+	
+	
+	def select(
+		self,
+		_table,
+		_repo_name = None):
+		
+		cursor = self._db_conn.cursor()
+		
+		if _repo_name == None:
+			cursor.execute(
+				_table)
+		else:
+			cursor.execute(
+				_table,
+				(_repo_name,))
+			
+		return cursor.fetchall()
