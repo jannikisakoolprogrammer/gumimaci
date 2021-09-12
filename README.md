@@ -1,5 +1,5 @@
 # gumimaci
-A simple tool for my Python projects, so I automatically test, build and create a release.
+A simple tool for my Python projects, so I can automatically test, build and create a release.
 The following is used:
 - nosetests:  For testing
 - cx_freeze:  For creating windows executables
