@@ -1,5 +1,6 @@
 from classes.GumimaciScheduler import GumimaciScheduler
 import secret
+import time
 
 
 personal_access_token = {
@@ -7,5 +8,7 @@ personal_access_token = {
 
 scheduler = GumimaciScheduler(personal_access_token)
 scheduler.connect()
-scheduler.run()
+while True:
+	scheduler.run()
+	time.sleep(60)
 

@@ -7,6 +7,7 @@ import subprocess
 import os.path
 import shutil
 import datetime
+import time
 
 
 class GumimaciWorker(Gumimaci):
@@ -58,17 +59,13 @@ class GumimaciWorker(Gumimaci):
 		# Delete record from queue after being processed.
 		rows_queue = self.select(
 			config.TABLE_QUEUE_SELECT_ALL)
-			
-		if sys.platform == "win32":
-			gumimaci_repo_file = "gumimaci_windows.yaml"
-		elif sys.platform == "linux":
-			gumimaci_repo_file = "gumimaci_linux.yaml"
 		
+		# A "gumimaci" file must exist.
+		gumimaci_repo_file = "gumimaci"
+
 		for row in rows_queue:
 			repo = self._github.get_user().get_repo(
 				row[0])
-			
-			print(repo)
 				
 			try:
 				content_file = repo.get_contents(
@@ -76,9 +73,9 @@ class GumimaciWorker(Gumimaci):
 					
 			except: # Exception:
 				#UnknownObjectException("status", "data", "headers")
-				print("file '%s' not found in repo '%s'" % (
-					gumimaci_repo_file,
-					repo.name))
+				#print("file '%s' not found in repo '%s'" % (
+				#	gumimaci_repo_file,
+				#	repo.name))
 				continue
 			
 			# Now check out the repository.
@@ -109,7 +106,25 @@ class GumimaciWorker(Gumimaci):
 				 "checkout",
 				 row[1]])
 				 
-			# Do validation, build, package and create a release.
+			# Do validation.
+			subprocess.run(
+				["nose2",
+				 "-v"])
+				
+			# Create an executable.
+			if sys.platform == "win32":
+				subprocess.run(
+					["python",
+					 "setup.py",
+					 "bdist_msi"])
+			elif sys.platform == "linux":
+				subprocess.run(
+					["python",
+					 "setup.py",
+					 "build"])
+			
+			break # TEMPORARY ONLY!
+			
 			# Only create a release for now.
 			dt = datetime.datetime.now().strftime(
 						"%Y_%m_%d_%H_%M_%S")
@@ -126,7 +141,7 @@ class GumimaciWorker(Gumimaci):
 				False,
 				row[1])
 			
-			# Go back on level.
+			# Go back two levels.
 			os.chdir("..")
 			os.chdir("..")
 				 
@@ -148,3 +163,6 @@ class GumimaciWorker(Gumimaci):
 			# TODO:  Remove entry from "queue" table.
 			self.delete_queue(
 				row[1])
+			
+			# Always sleep 5 minutes between creating a new release.
+			time.sleep(60)

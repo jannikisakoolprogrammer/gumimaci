@@ -54,13 +54,8 @@ class GumimaciScheduler(Gumimaci):
 		rate = self._github.get_rate_limit()
 		print(rate)
 		
-		# Go through all repos, and only take into account those, that have a 
-		# "gumimaci_linux.yaml" or "gumimaci_windows.yaml" file in the root dir.
-		
-		if sys.platform == "win32":
-			gumimaci_repo_file = "gumimaci_windows.yaml"
-		elif sys.platform == "linux":
-			gumimaci_repo_file = "gumimaci_linux.yaml"
+		# A "gumimaci" file must exist.
+		gumimaci_repo_file = "gumimaci"
 		
 		if gumimaci_repo_file != "":
 			for repo in self._github.get_user().get_repos():
@@ -119,7 +114,7 @@ class GumimaciScheduler(Gumimaci):
 								row_repository)
 							
 							# Oldest to newest.
-							reversed(recent_commits)
+							#reversed(recent_commits)
 							
 							# Fetch all repository build queue records.
 							rows_queue = self.select(
