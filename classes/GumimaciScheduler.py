@@ -65,9 +65,9 @@ class GumimaciScheduler(Gumimaci):
 						
 				except: # Exception:
 					#UnknownObjectException("status", "data", "headers")
-					print("file '%s' not found in repo '%s'" % (
-						gumimaci_repo_file,
-						repo.name))
+					#print("file '%s' not found in repo '%s'" % (
+					#	gumimaci_repo_file,
+					#	repo.name))
 					continue
 					
 				# Store important information.
