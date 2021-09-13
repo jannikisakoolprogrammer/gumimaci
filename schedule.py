@@ -10,5 +10,5 @@ scheduler = GumimaciScheduler(personal_access_token)
 scheduler.connect()
 while True:
 	scheduler.run()
-	time.sleep(60)
+	time.sleep(300) # Run every 5 minutes.
 
