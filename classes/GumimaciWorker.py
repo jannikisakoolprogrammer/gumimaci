@@ -168,16 +168,17 @@ class GumimaciWorker(Gumimaci):
 			d_path = os.path.join(
 				os.getcwd(),
 				"dist")
-			files = os.listdir(d_path)
-			if len(files) > 0:
-				for f in files:
-					installer_path = os.path.join(
-						d_path,
-						f)
-					
-					git_release.upload_asset(
-						installer_path,
-						label = f)				
+			if os.path.exists(d_path):
+				files = os.listdir(d_path)
+				if len(files) > 0:
+					for f in files:
+						installer_path = os.path.join(
+							d_path,
+							f)
+						
+						git_release.upload_asset(
+							installer_path,
+							label = f)				
 			
 			# Go back two levels.
 			os.chdir("..")
