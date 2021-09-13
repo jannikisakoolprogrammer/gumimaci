@@ -8,6 +8,7 @@ import os.path
 import shutil
 import datetime
 import time
+import importlib.util
 
 
 class GumimaciWorker(Gumimaci):
@@ -110,6 +111,14 @@ class GumimaciWorker(Gumimaci):
 			subprocess.run(
 				["nose2",
 				 "-v"])
+				 
+			path1 = os.path.join(
+				os.getcwd(),
+				"version.py")
+				 
+			spec = importlib.util.spec_from_file_location("version.py", path1)			
+			version = importlib.util.module_from_spec(spec)
+			spec.loader.exec_module(version)
 				
 			# Create an executable.
 			if sys.platform == "win32":
@@ -123,23 +132,52 @@ class GumimaciWorker(Gumimaci):
 					 "setup.py",
 					 "build"])
 			
-			break # TEMPORARY ONLY!
-			
 			# Only create a release for now.
 			dt = datetime.datetime.now().strftime(
 						"%Y_%m_%d_%H_%M_%S")
 						
-			repo.create_git_release(
-				"%s%s" % (
+			git_release = repo.create_git_release(
+				"%s_%s" % (
 					repo.name,
-					dt),
-				"%s%s" % (
+					version.VERSION),
+				"%s_%s" % (
 					repo.name,
-					dt),
+					version.VERSION),
 				row[2],
 				False,
 				False,
 				row[1])
+			
+			# For windows and linux:  Zip "build" directory.
+			b_path = os.path.join(
+				os.getcwd(),
+				"build")
+			p = shutil.make_archive(
+				sys.platform,
+				"zip",
+				root_dir = b_path)
+			
+			# Upload zip (no installer needed)
+			git_release.upload_asset(
+				p,
+				label="%s_%s" % (
+					repo.name,
+					version.VERSION))
+			
+			# Upload installer.
+			d_path = os.path.join(
+				os.getcwd(),
+				"dist")
+			files = os.listdir(d_path)
+			if len(files) > 0:
+				for f in files:
+					installer_path = os.path.join(
+						d_path,
+						f)
+					
+					git_release.upload_asset(
+						installer_path,
+						label = f)				
 			
 			# Go back two levels.
 			os.chdir("..")

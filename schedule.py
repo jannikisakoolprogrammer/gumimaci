@@ -8,7 +8,7 @@ personal_access_token = {
 
 scheduler = GumimaciScheduler(personal_access_token)
 scheduler.connect()
-#while True:
-scheduler.run()
-#time.sleep(60)
+while True:
+	scheduler.run()
+	time.sleep(60)
 
