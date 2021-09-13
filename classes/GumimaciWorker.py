@@ -108,9 +108,14 @@ class GumimaciWorker(Gumimaci):
 				 row[1]])
 				 
 			# Do validation.
-			subprocess.run(
-				["nose2",
-				 "-v"])
+			if sys.platform == "win32":
+				subprocess.run(
+					["nose2",
+					 "-v"])
+			else:
+				subprocess.run(
+					["nose2-3",
+					 "-v"])	
 				 
 			path1 = os.path.join(
 				os.getcwd(),
@@ -128,7 +133,7 @@ class GumimaciWorker(Gumimaci):
 					 "bdist_msi"])
 			elif sys.platform == "linux":
 				subprocess.run(
-					["python",
+					["python3",
 					 "setup.py",
 					 "build"])
 			
@@ -137,12 +142,14 @@ class GumimaciWorker(Gumimaci):
 						"%Y_%m_%d_%H_%M_%S")
 						
 			git_release = repo.create_git_release(
-				"%s_%s" % (
+				"%s_%s_%s" % (
 					repo.name,
-					version.VERSION),
-				"%s_%s" % (
+					version.VERSION,
+					sys.platform),
+				"%s_%s_%s" % (
 					repo.name,
-					version.VERSION),
+					version.VERSION,
+					sys.platform),
 				row[2],
 				False,
 				False,
@@ -160,9 +167,10 @@ class GumimaciWorker(Gumimaci):
 			# Upload zip (no installer needed)
 			git_release.upload_asset(
 				p,
-				label="%s_%s" % (
+				label="%s_%s_%s" % (
 					repo.name,
-					version.VERSION))
+					version.VERSION,
+					sys.platform))
 			
 			# Upload installer.
 			d_path = os.path.join(
