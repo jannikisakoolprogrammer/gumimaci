@@ -3,6 +3,7 @@ import sqlite3
 import logging
 
 import config
+import os
 
 logging.basicConfig(
 	level = logging.INFO)
@@ -19,4 +20,7 @@ connection.commit()
 
 connection.close()
 logging.info("Creating tables finished")
+
+os.mkdir("repositories")
+
 logging.info("Script executed successfully.  You may now start using gumimaci.")
